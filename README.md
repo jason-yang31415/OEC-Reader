@@ -3,6 +3,7 @@ Reads the OEC database
 
 Interactive UI for the OEC database offline.
 OEC database: https://github.com/OpenExoplanetCatalogue/open_exoplanet_catalogue
+
 "Copyright (C) 2012 Hanno Rein
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this database and associated scripts (the "Database"), to deal in the Database without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Database, and to permit persons to whom the Database is furnished to do so, subject to the following conditions:
