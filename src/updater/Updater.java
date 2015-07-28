@@ -13,8 +13,10 @@ import java.nio.channels.ReadableByteChannel;
 
 public class Updater {
 
-	String oecurl = "https://dl.dropboxusercontent.com/s/f7yc7jxlijldutx/oec.jar";
-	String versionurl = "https://dl.dropboxusercontent.com/s/fjmebk8c6x76fpk/version.txt";
+	//String oecurl = "https://dl.dropboxusercontent.com/s/f7yc7jxlijldutx/oec.jar";
+	String oecurl = "https://raw.githubusercontent.com/jason-yang31415/OEC-Reader/master/oec.jar";
+	//String versionurl = "https://dl.dropboxusercontent.com/s/fjmebk8c6x76fpk/version.txt";
+	String versionurl = "https://raw.githubusercontent.com/jason-yang31415/OEC-Reader/master/version.txt";
 	String dir;
 	
 	String latestVersion = "";
