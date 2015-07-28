@@ -2,6 +2,9 @@
 Reads the OEC database
 
 Interactive UI for the OEC database offline.
+
+--------
+
 OEC database: https://github.com/OpenExoplanetCatalogue/open_exoplanet_catalogue
 
 "Copyright (C) 2012 Hanno Rein
