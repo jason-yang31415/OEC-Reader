@@ -7,6 +7,7 @@ public class Planet extends Data  implements Serializable {
 	
 	//ArrayList<String> names = new ArrayList<String>();
 	String mass, radius, period, smaxis, discmethod, discyear, temp;
+	String age;
 	String description = "";
 	StarSystem parent;
 	
@@ -40,6 +41,10 @@ public class Planet extends Data  implements Serializable {
 	
 	public void setTemp(String temp){
 		this.temp = temp;
+	}
+	
+	public void setAge(String age){
+		this.age = age;
 	}
 	
 	public void setDescription(String description){

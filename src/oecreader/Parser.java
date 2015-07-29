@@ -113,30 +113,32 @@ public class Parser {
 				else if (n.getNodeName().equals("mass")){
 					if (!text.equals(""))
 						star.setMass(text);
-					else {
+					else
 						star.setMass(range(n));
-					}
 				}
 				else if (n.getNodeName().equals("radius")){
 					if (!text.equals(""))
 						star.setRadius(text);
-					else {
+					else
 						star.setRadius(range(n));
-					}
 				}
 				else if (n.getNodeName().equals("temperature")){
 					if (!text.equals(""))
 						star.setTemp(text);
-					else {
+					else
 						star.setTemp(range(n));
-					}
 				}
 				else if (n.getNodeName().equals("magV")){
 					if (!text.equals(""))
 						star.setMagV(text);
-					else {
+					else
 						star.setMagV(range(n));
-					}
+				}
+				else if (n.getNodeName().equals("age")){
+					if (!text.equals(""))
+						star.setAge(text);
+					else
+						star.setAge(range(n));
 				}
 				else if (n.getNodeName().equals("spectraltype"))
 					star.setSpectralType(readNodeText(n));
@@ -209,6 +211,12 @@ public class Parser {
 					else {
 						p.setTemp(range(n));
 					}
+				}
+				else if (n.getNodeName().equals("age")){
+					if (!text.equals(""))
+						p.setAge(text);
+					else
+						p.setAge(range(n));
 				}
 				else if (n.getNodeName().equals("description")){
 					p.setDescription(text);

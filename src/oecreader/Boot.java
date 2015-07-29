@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
@@ -212,6 +213,8 @@ public class Boot {
 			System.out.println("	Temp: " + star.temp);
 		if (star.magV != null)
 			System.out.println("	Visual Mag: " + star.magV);
+		if (star.age != null)
+			System.out.println("	Age: " + star.age);
 		if (star.spectraltype != null)
 			System.out.println("	Spectral Type: " + star.spectraltype);
 		
@@ -254,6 +257,8 @@ public class Boot {
 			System.out.println("	Semimajor Axis: " + p.smaxis);
 		if (p.temp != null)
 			System.out.println("	Temp: " + p.temp);
+		if (p.age != null)
+			System.out.println("	Age: " + p.age);
 		if (p.discmethod != null && p.discyear != null)
 			System.out.println("	Discoverd through " + p.discmethod + " in " + p.discyear);
 		System.out.println("	" + p.description);
@@ -439,6 +444,12 @@ public class Boot {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			if (e instanceof InvalidClassException){
+				System.out.println("data.ser is invalid for this version of OEC Reader.");
+				System.out.println("Re-parsing and serializing...");
+				parse();
+				serialize();
+			}
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

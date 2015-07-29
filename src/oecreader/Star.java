@@ -8,6 +8,7 @@ public class Star extends Data  implements Serializable {
 	//ArrayList<String> names = new ArrayList<String>();
 	String mass, radius, temp, magV;
 	String spectraltype;
+	String age;
 	StarSystem parent;
 	
 	public void setParent(StarSystem parent){
@@ -28,6 +29,10 @@ public class Star extends Data  implements Serializable {
 	
 	public void setMagV(String magV){
 		this.magV = magV;
+	}
+	
+	public void setAge(String age){
+		this.age = age;
 	}
 	
 	public void setSpectralType(String spectraltype){
