@@ -16,7 +16,9 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.zip.GZIPInputStream;
 
@@ -26,6 +28,8 @@ import java.util.zip.GZIPInputStream;
  */
 
 public class Boot {
+	
+	Map<String, String> units = new HashMap<String, String>();
 	
 	String dir;
 	String url = "https://github.com/OpenExoplanetCatalogue/oec_gzip/raw/master/systems.xml.gz";
@@ -43,6 +47,8 @@ public class Boot {
 		if (dir.endsWith("/"))
 			dir = dir.substring(0, dir.length() - 1);
 		dir = dir.substring(0, dir.lastIndexOf("/"));
+		
+		initUnits();
 		
 		deserialize();
         
@@ -206,15 +212,15 @@ public class Boot {
 		hr();
 		
 		if (star.mass != null)
-			System.out.println("	Mass: " + star.mass);
+			System.out.println("	Mass: " + star.mass + " " + units.get("mass_star"));
 		if (star.radius != null)
-			System.out.println("	Radius: " + star.radius);
+			System.out.println("	Radius: " + star.radius + " " + units.get("radius_star"));
 		if (star.temp != null)
-			System.out.println("	Temp: " + star.temp);
+			System.out.println("	Temp: " + star.temp + " " + units.get("temp"));
 		if (star.magV != null)
 			System.out.println("	Visual Mag: " + star.magV);
 		if (star.age != null)
-			System.out.println("	Age: " + star.age);
+			System.out.println("	Age: " + star.age + " " + units.get("age"));
 		if (star.spectraltype != null)
 			System.out.println("	Spectral Type: " + star.spectraltype);
 		
@@ -248,17 +254,17 @@ public class Boot {
 		hr();
 		
 		if (p.mass != null)
-			System.out.println("	Mass: " + p.mass);
+			System.out.println("	Mass: " + p.mass + " " + units.get("mass_planet"));
 		if (p.radius != null)
-			System.out.println("	Radius: " + p.radius);
+			System.out.println("	Radius: " + p.radius + " " + units.get("radius_planet"));
 		if (p.period != null)
-			System.out.println("	Period: " + p.period);
+			System.out.println("	Period: " + p.period + " " + units.get("period"));
 		if (p.smaxis != null)
-			System.out.println("	Semimajor Axis: " + p.smaxis);
+			System.out.println("	Semimajor Axis: " + p.smaxis + " " + units.get("smaxis"));
 		if (p.temp != null)
-			System.out.println("	Temp: " + p.temp);
+			System.out.println("	Temp: " + p.temp + " " + units.get("temp"));
 		if (p.age != null)
-			System.out.println("	Age: " + p.age);
+			System.out.println("	Age: " + p.age + " " + units.get("age"));
 		if (p.discmethod != null && p.discyear != null)
 			System.out.println("	Discoverd through " + p.discmethod + " in " + p.discyear);
 		System.out.println("	" + p.description);
@@ -475,6 +481,18 @@ public class Boot {
 	
 	public void hr(){
 		System.out.println("----------------------------------------");
+	}
+	
+	public void initUnits(){
+		units.put("mass_star", "Msun");
+		units.put("mass_planet", "Mj");
+		units.put("radius_star", "Rsun");
+		units.put("radius_planet", "Rj");
+		units.put("distance", "pcs");
+		units.put("smaxis", "AU");
+		units.put("period", "days");
+		units.put("temp", "K");
+		units.put("age", "Gyr");
 	}
 	
 }
