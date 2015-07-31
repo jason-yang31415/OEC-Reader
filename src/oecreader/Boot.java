@@ -38,6 +38,20 @@ public class Boot {
 	boolean serialize = false;
 	Scanner sc;
 	
+	public enum State {
+		HOME("HOME"),
+		RESULTS("HOME > SEARCH"),
+		SYSTEM("SYSTEM"),
+		STAR("STAR"),
+		PLANET("PLANET");
+		
+		final String loc;
+		
+		State(String loc){
+			this.loc = loc;
+		}
+	}
+	
 	public static void main (String[] args){
 		new Boot().run();
 	}
@@ -57,63 +71,67 @@ public class Boot {
 		loop();
 	}
 	
-	public void loop(){
-		System.out.println("Input commands...");
-		System.out.print(">> ");
+	public void loop(String... cmd){
+		String in;
+		if (cmd.length <= 0)
+			in = input(State.HOME);
+		else
+			in = parseInput(cmd[0]);
 		
-		String input = sc.nextLine();
-		String[] commands = input.split(" ");
+		String[] cmds = in.split(",");
 		
-		if (commands.length > 0){
-			commands[0] = commands[0].toLowerCase();
-			if (commands[0].equals("search")){
-				String s = "";
-				String params = "";
+		for (String cmdlet : cmds){
+			cmdlet = parseInput(cmdlet);
+			
+			String[] commands = cmdlet.split(" ");
+			
+			if (commands.length > 0){
 				
-				for (int i = 1; i < commands.length; i++){
-					String arg = commands[i];
-					if (arg.toLowerCase().equals("-system"))
-						params += "type=system;";
-					else if (arg.toLowerCase().equals("-star"))
-						params += "type=star;";
-					else if (arg.toLowerCase().equals("-planet"))
-						params += "type=planet;";
-					else
-						s += arg + " ";
+				if (commands[0].equalsIgnoreCase("search")){
+					String s = "";
+					String params = "";
+					
+					for (int i = 1; i < commands.length; i++){
+						String arg = commands[i];
+						if (arg.toLowerCase().equals("-system"))
+							params += "type=system;";
+						else if (arg.toLowerCase().equals("-star"))
+							params += "type=star;";
+						else if (arg.toLowerCase().equals("-planet"))
+							params += "type=planet;";
+						else
+							s += arg + " ";
+					}
+					
+					if (s.equals(""))
+						loop();
+					
+					if (!params.contains("type"))
+						params += "type=system;type=star;type=planet";
+					
+					s = s.substring(0, s.length() - 1);
+					ArrayList<Data> matches = search(s, params);
+					
+					if (matches.size() == 1)
+						displayData(matches.get(0));
+					else {
+						if (matches.size() > 0)
+							chooseResult(matches);
+						else
+							System.out.println("No matches found.");
+					}
 				}
-				
-				if (s.equals(""))
-					loop();
-				
-				if (!params.contains("type"))
-					params += "type=system;type=star;type=planet";
-				
-				s = s.substring(0, s.length() - 1);
-				ArrayList<Data> matches = search(s, params);
-				
-				if (matches.size() == 1)
-					displayData(matches.get(0));
-				else {
-					if (matches.size() > 0)
-						chooseResult(matches);
-					else
-						System.out.println("No matches found.");
-				}
+				else if (commands[0].equalsIgnoreCase("update"))
+					update();
+				else if (commands[0].equalsIgnoreCase("parse"))
+					parse();
+				else if (commands[0].equalsIgnoreCase("serialize"))
+					serialize();
+				else if (commands[0].equalsIgnoreCase("deserialize"))
+					deserialize();
+				else
+					System.out.println("Type 'help' for help");
 			}
-			else if (commands[0].equals("update"))
-				update();
-			else if (commands[0].equals("parse"))
-				parse();
-			else if (commands[0].equals("serialize"))
-				serialize();
-			else if (commands[0].equals("deserialize"))
-				deserialize();
-			else if (commands[0].equals("help"))
-				help();
-			else if (commands[0].equals("exit"))
-				System.exit(0);
-			else
-				System.out.println("Type 'help' for help");
 		}
 		
 		loop();
@@ -127,25 +145,25 @@ public class Boot {
 		for (int i = 0; i < matches.size(); i++){
 			Data m = matches.get(i);
 			
-			System.out.println((i + 1) + ". " + m.name);
+			if (m instanceof StarSystem)
+				System.out.println("\n" + (i + 1) + ".	" + m.name + " (System)");
+			else
+				System.out.println((i + 1) + ".	" + m.name);
 		}
 		
-		System.out.print(">> ");
+		String in = input(State.RESULTS);
 		
-		int choice = 0;
 		try {
-			choice = sc.nextInt();
-			sc.nextLine();
-		} catch (InputMismatchException e){
-			sc.nextLine();
+			int choice = Integer.parseInt(in);
+			
+			if (choice > 0)
+				displayData(matches.get(choice - 1));
+			else
+				loop();
+		} catch (NumberFormatException e){
 			System.err.println("Not a valid option");
 			chooseResult(matches);
 		}
-		
-		if (choice > 0)
-			displayData(matches.get(choice - 1));
-		else
-			loop();
 	}
 	
 	public void displayData(Data d){
@@ -160,7 +178,7 @@ public class Boot {
 	}
 	
 	public void displaySystemData(StarSystem sys){
-		System.out.println("\nStar System");
+		System.out.println("Star System");
 		
 		System.out.println(sys.name);
 		hr();
@@ -182,26 +200,20 @@ public class Boot {
 			System.out.println((i + sys.stars.size() + 1) + ". " + p.name);
 		}
 
-		System.out.print(">> ");
-		
-		int choice = 0;
+		String in = input(State.SYSTEM, sys.names.get(0));
 		try {
-			choice = sc.nextInt();
-			sc.nextLine();
-		} catch (InputMismatchException e){
-			sc.nextLine();
+			int choice = Integer.parseInt(in);
+			
+			if (choice > 0){
+				if (choice - 1 < sys.stars.size())
+					displayData(sys.stars.get(choice - 1));
+				else
+					displayData(sys.planets.get(choice - sys.stars.size() - 1));
+			}
+		} catch (NumberFormatException e){
 			System.err.println("Not a valid option");
-			displaySystemData(sys);
+			displayData(sys);
 		}
-		
-		if (choice > 0){
-			if (choice - 1 < sys.stars.size())
-				displayData(sys.stars.get(choice - 1));
-			else
-				displayData(sys.planets.get(choice - sys.stars.size() - 1));
-		}
-		else
-			loop();
 	}
 	
 	public void displayStarData(Star star){
@@ -225,25 +237,16 @@ public class Boot {
 		
 		hr();
 		
-		System.out.println("0. Back");
-		System.out.println("1. View System");
+		System.out.println();
+		System.out.println("'up' - view system");
 
-		System.out.print(">> ");
-		
-		int choice = 0;
-		try {
-			choice = sc.nextInt();
-			sc.nextLine();
-		} catch (InputMismatchException e){
-			sc.nextLine();
-			System.err.println("Not a valid option");
-			displayStarData(star);
-		}
-		
-		if (choice == 0)
-			loop();
-		else if (choice == 1)
+		String in = input(State.SYSTEM, star.parent.names.get(0) + " > " + star.names.get(0));
+		if (in.equals("up"))
 			displayData(star.parent);
+		else {
+			System.err.println("Not a valid option");
+			displayData(star);
+		}
 	}
 	
 	public void displayPlanetData(Planet p){
@@ -270,25 +273,48 @@ public class Boot {
 		
 		hr();
 		
-		System.out.println("0. Back");
-		System.out.println("1. View System");
+		System.out.println();
+		System.out.println("'up' - view system");
 
-		System.out.print(">> ");
-		
-		int choice = 0;
-		try {
-			choice = sc.nextInt();
-			sc.nextLine();
-		} catch (InputMismatchException e){
-			sc.nextLine();
-			System.err.println("Not a valid option");
-			displayPlanetData(p);
-		}
-		
-		if (choice == 0)
-			loop();
-		else if (choice == 1)
+		String in = input(State.SYSTEM, p.parent.names.get(0) + " > " + p.names.get(0));
+		if (in.equals("up"))
 			displayData(p.parent);
+		else {
+			System.err.println("Not a valid option");
+			displayData(p);
+		}
+	}
+	
+	public String input(State state, String... location){
+		System.out.println();
+		if (location.length > 0)
+			System.out.print(location[0]);
+		else
+			System.out.print(state.loc);
+		System.out.print(" >> ");
+		
+		String in = sc.nextLine();
+		return parseInput(in);
+	}
+	
+	public String parseInput(String in){
+		String[] cmds = in.split(",");
+		String cmd = cmds[0];
+		
+		if (cmd.equals("exit"))
+			System.exit(0);
+		else if (cmd.equals("home")){
+			if (cmds.length > 0)
+				loop(in.split(",", 2)[1]);
+			else
+				loop();
+		}
+		else if (cmd.equals("help")){
+			
+		}
+		else
+			return in;
+		return null;
 	}
 	
 	public ArrayList<Data> search(String search, String params){
