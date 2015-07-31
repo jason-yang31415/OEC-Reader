@@ -302,7 +302,7 @@ public class Boot {
 		if (cmd.equals("exit"))
 			System.exit(0);
 		else if (cmd.equals("home")){
-			if (cmds.length > 0)
+			if (cmds.length > 1)
 				loop(in.split(",", 2)[1]);
 			else
 				loop();
