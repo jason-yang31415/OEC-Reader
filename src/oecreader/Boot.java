@@ -73,10 +73,14 @@ public class Boot {
 	
 	public void loop(String... cmd){
 		String in;
-		if (cmd.length <= 0)
+		if (cmd.length <= 0){
 			in = input(State.HOME);
+		}
 		else
 			in = parseInput(cmd[0]);
+		
+		if (in == null)
+			loop();
 		
 		String[] cmds = in.split(",");
 		
@@ -308,7 +312,7 @@ public class Boot {
 				loop();
 		}
 		else if (cmd.equals("help")){
-			
+			help();
 		}
 		else
 			return in;
@@ -490,15 +494,21 @@ public class Boot {
 		System.out.println("Type 'search [keywords]' to search for a star system, star, or exoplanet.");
 		System.out.println("Searches are not case-sensitive.");
 		System.out.println("Enter the number preceding an option to view that option.");
-		System.out.println("Enter '0' at any point to go back to the home view.");
-		System.out.println();
+		System.out.println("Enter 'home' at any point to go back to the home view.");
+		hr();
 		System.out.println("Type 'update' to download and extract the latest data file.");
 		System.out.println("Type 'parse' to parse the data file.");
 		System.out.println("Type 'serialize' to export data to data.ser after parsing.");
 		System.out.println("Type 'deserialize' to import data from data.ser.");
 		System.out.println("Type 'exit' to quit.");
-		System.out.println();
+		hr();
+		System.out.println("Multiple commands can be executed with one command. "
+				+ "For example,  update,parse,serialize  will update the data, parse it, "
+				+ "then export it to data.ser with one line.");
+		hr();
 		System.out.println("Try typing 'search earth'");
+		hr();
+		System.out.println("See https://github.com/jason-yang31415/OEC-Reader/wiki for more details.");
 		System.out.println("\n");
 	}
 	
