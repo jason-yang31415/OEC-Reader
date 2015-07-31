@@ -62,7 +62,6 @@ public class Boot {
 		System.out.print(">> ");
 		
 		String input = sc.nextLine();
-		String output = "";
 		String[] commands = input.split(" ");
 		
 		if (commands.length > 0){
@@ -167,7 +166,7 @@ public class Boot {
 		hr();
 		
 		System.out.println("	" + sys.ra + ", " + sys.dec);
-		System.out.println("	Distance: " + sys.distance);
+		System.out.println("	Distance: " + sys.distance + getUnits("distance"));
 		
 		hr();
 		
@@ -212,15 +211,15 @@ public class Boot {
 		hr();
 		
 		if (star.mass != null)
-			System.out.println("	Mass: " + star.mass + " " + units.get("mass_star"));
+			System.out.println("	Mass: " + star.mass + getUnits("mass_star"));
 		if (star.radius != null)
-			System.out.println("	Radius: " + star.radius + " " + units.get("radius_star"));
+			System.out.println("	Radius: " + star.radius + getUnits("radius_star"));
 		if (star.temp != null)
-			System.out.println("	Temp: " + star.temp + " " + units.get("temp"));
+			System.out.println("	Temp: " + star.temp + getUnits("temp"));
 		if (star.magV != null)
 			System.out.println("	Visual Mag: " + star.magV);
 		if (star.age != null)
-			System.out.println("	Age: " + star.age + " " + units.get("age"));
+			System.out.println("	Age: " + star.age + getUnits("age"));
 		if (star.spectraltype != null)
 			System.out.println("	Spectral Type: " + star.spectraltype);
 		
@@ -254,17 +253,17 @@ public class Boot {
 		hr();
 		
 		if (p.mass != null)
-			System.out.println("	Mass: " + p.mass + " " + units.get("mass_planet"));
+			System.out.println("	Mass: " + p.mass + getUnits("mass_planet"));
 		if (p.radius != null)
-			System.out.println("	Radius: " + p.radius + " " + units.get("radius_planet"));
+			System.out.println("	Radius: " + p.radius + getUnits("radius_planet"));
 		if (p.period != null)
-			System.out.println("	Period: " + p.period + " " + units.get("period"));
+			System.out.println("	Period: " + p.period + getUnits("period"));
 		if (p.smaxis != null)
-			System.out.println("	Semimajor Axis: " + p.smaxis + " " + units.get("smaxis"));
+			System.out.println("	Semimajor Axis: " + p.smaxis + getUnits("smaxis"));
 		if (p.temp != null)
-			System.out.println("	Temp: " + p.temp + " " + units.get("temp"));
+			System.out.println("	Temp: " + p.temp + getUnits("temp"));
 		if (p.age != null)
-			System.out.println("	Age: " + p.age + " " + units.get("age"));
+			System.out.println("	Age: " + p.age + getUnits("age"));
 		if (p.discmethod != null && p.discyear != null)
 			System.out.println("	Discoverd through " + p.discmethod + " in " + p.discyear);
 		System.out.println("	" + p.description);
@@ -481,6 +480,10 @@ public class Boot {
 	
 	public void hr(){
 		System.out.println("----------------------------------------");
+	}
+	
+	public String getUnits(String key){
+		return " " + units.get(key);
 	}
 	
 	public void initUnits(){
