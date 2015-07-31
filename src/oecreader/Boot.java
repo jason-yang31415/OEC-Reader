@@ -140,8 +140,6 @@ public class Boot {
 	public void chooseResult(ArrayList<Data> matches){
 		System.out.println("\n\n");
 		
-		System.out.println("0. Back");
-		
 		for (int i = 0; i < matches.size(); i++){
 			Data m = matches.get(i);
 			
