@@ -393,21 +393,22 @@ public class Boot {
 	}
 	
 	public void parse(){
-		try {
-			System.out.println("parsing data...");
-			String path = dir + "/systems.xml";
-			InputStream i = new FileInputStream(path);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(i));
+		System.out.println("parsing data...");
+		String path = dir + "/systems.xml";
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)))){
 			String line;
-			String s = "";
+			StringBuilder sb = new StringBuilder();
 			while ((line = reader.readLine()) != null){
-				s += line + "\n";
+				sb.append(line);
+				sb.append(System.lineSeparator());
 			}
 			
 			Parser parser = new Parser();
-			parser.read(s);
+			parser.read(sb.toString());
 			
 			systems = parser.getSystems();
+			
+			reader.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
