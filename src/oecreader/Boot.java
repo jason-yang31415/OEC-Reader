@@ -22,12 +22,18 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.zip.GZIPInputStream;
 
+import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 /**
  * @author Jason Yang
  *
  */
 
 public class Boot {
+	
+	public static Boot boot;
 	
 	Map<String, String> units = new HashMap<String, String>();
 	
@@ -53,7 +59,8 @@ public class Boot {
 	}
 	
 	public static void main (String[] args){
-		new Boot().run();
+		boot = new Boot();
+		boot.run();
 	}
 	
 	public void run(){
@@ -68,7 +75,9 @@ public class Boot {
         
 		sc = new Scanner(System.in);
 		
-		loop();
+		createGUI();
+		
+		//loop();
 	}
 	
 	public void loop(String... cmd){
@@ -138,7 +147,7 @@ public class Boot {
 			}
 		}
 		
-		loop();
+		//loop();
 	}
 	
 	public void chooseResult(ArrayList<Data> matches){
@@ -531,6 +540,31 @@ public class Boot {
 		units.put("period", "days");
 		units.put("temp", "K");
 		units.put("age", "Gyr");
+	}
+	
+	public void createGUI(){
+		try {
+            // Set System L&F
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} 
+		catch (UnsupportedLookAndFeelException e) {
+			// handle exception
+		}
+		catch (ClassNotFoundException e) {
+			// handle exception
+		}
+		catch (InstantiationException e) {
+			//handle exception
+		}
+		catch (IllegalAccessException e) {
+			// handle exception
+		}
+		
+		GUI gui = new GUI();
+		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gui.setSize(960, 540);
+		gui.setResizable(false);
+		gui.setVisible(true);
 	}
 	
 }
