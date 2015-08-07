@@ -47,6 +47,14 @@ public class GUI extends JFrame {
 	public GUI(){
 		super("Open Exoplanet Catalogue");
 		
+		try {
+			Image i = ImageIO.read(this.getClass().getResourceAsStream("res/icon.png"));
+			this.setIconImage(i);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 2 - 960 / 2, dim.height / 2 - 540 / 2);
 		
@@ -68,9 +76,14 @@ public class GUI extends JFrame {
 	public void initComponents(){
 		try {
 			JPanel options = new JPanel();
-			options.setLayout(new BoxLayout(options, BoxLayout.PAGE_AXIS));
+			options.setLayout(new BorderLayout());
 			options.setBackground(background);
 			add(options, BorderLayout.WEST);
+			
+			JPanel top_buttons = new JPanel();
+			top_buttons.setLayout(new BoxLayout(top_buttons, BoxLayout.PAGE_AXIS));
+			top_buttons.setBackground(background);
+			options.add(top_buttons, BorderLayout.CENTER);
 			
 			sync = new JButton();
 			sync.setFocusable(false);
@@ -102,9 +115,9 @@ public class GUI extends JFrame {
 				}
 				
 			});
-			options.add(sync);
+			top_buttons.add(sync);
 			
-			options.add(Box.createRigidArea(new Dimension(0, 25)));
+			top_buttons.add(Box.createRigidArea(new Dimension(0, 25)));
 			
 			sysCheck = new JCheckBox("system", true);
 			sysCheck.setBackground(background);
@@ -118,14 +131,51 @@ public class GUI extends JFrame {
 			pCheck.setBackground(background);
 			pCheck.setFocusable(false);
 			
-			options.add(sysCheck);
-			options.add(starCheck);
-			options.add(pCheck);
+			top_buttons.add(sysCheck);
+			top_buttons.add(starCheck);
+			top_buttons.add(pCheck);
 			
 			CheckListener cl = new CheckListener();
 			sysCheck.addActionListener(cl);
 			starCheck.addActionListener(cl);
 			pCheck.addActionListener(cl);
+			
+			JPanel bottom_buttons = new JPanel();
+			bottom_buttons.setLayout(new BoxLayout(bottom_buttons, BoxLayout.PAGE_AXIS));
+			bottom_buttons.setBackground(background);
+			options.add(bottom_buttons, BorderLayout.SOUTH);
+			
+			JButton help = new JButton();
+			help.setFocusable(false);
+			Image help_img = ImageIO.read(this.getClass().getResourceAsStream("res/help.png"));
+			ImageIcon help_icon = new ImageIcon(help_img);
+			Image help_hover_img = ImageIO.read(this.getClass().getResourceAsStream("res/help_hover.png"));
+			ImageIcon help_hover_icon = new ImageIcon(help_hover_img);
+			help.setIcon(help_icon);
+			help.setPreferredSize(new Dimension(30, 30));
+			help.setContentAreaFilled(false);
+			help.addMouseListener(new MouseAdapter(){
+				
+				public void mouseEntered(java.awt.event.MouseEvent evt){
+					help.setIcon(help_hover_icon);
+				}
+				
+				public void mouseExited(java.awt.event.MouseEvent evt){
+					help.setIcon(help_icon);
+				}
+				
+			});
+			help.addActionListener(new ActionListener(){
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					Boot.boot.help();
+				}
+				
+			});
+			bottom_buttons.add(help);
+			
+			bottom_buttons.add(Box.createRigidArea(new Dimension(0, 10)));
 			
 			
 			

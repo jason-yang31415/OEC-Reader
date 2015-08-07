@@ -1,12 +1,16 @@
 package oecreader;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -24,6 +28,14 @@ public class DataDisplay extends JFrame {
 	
 	public DataDisplay(Data d, GUI gui){
 		super(d.names.get(0));
+		
+		try {
+			Image i = ImageIO.read(this.getClass().getResourceAsStream("res/icon.png"));
+			this.setIconImage(i);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 3 - 720 / 2, dim.height / 3 - 405 / 2);
@@ -138,9 +150,8 @@ public class DataDisplay extends JFrame {
 		title.setLayout(new BorderLayout());
 		content.add(title, BorderLayout.NORTH);
 		
-		JLabel type = new JLabel("System");
-		type.setFont(gui.h3);
-		type.setForeground(gui.h3color);
+		JLabel type = new JLabel("Star");
+		type.setFont(gui.font);
 		title.add(type, BorderLayout.NORTH);
 		
 		JLabel name = new JLabel(star.names.get(0));
@@ -224,9 +235,8 @@ public class DataDisplay extends JFrame {
 		title.setLayout(new BorderLayout());
 		content.add(title, BorderLayout.NORTH);
 		
-		JLabel type = new JLabel("System");
-		type.setFont(gui.h3);
-		type.setForeground(gui.h3color);
+		JLabel type = new JLabel("Planet");
+		type.setFont(gui.font);
 		title.add(type, BorderLayout.NORTH);
 		
 		JLabel name = new JLabel(p.names.get(0));
@@ -284,8 +294,12 @@ public class DataDisplay extends JFrame {
 		
 		data.add(Box.createRigidArea(new Dimension(0, 15)));
 		
-		JLabel desc = new JLabel(p.description);
+		JTextArea desc = new JTextArea(p.description);
+		desc.setEditable(false);
+		desc.setLineWrap(true);
+		desc.setWrapStyleWord(true);
 		desc.setFont(gui.font);
+		desc.setAlignmentX(LEFT_ALIGNMENT);
 		data.add(desc);
 	}
 	
