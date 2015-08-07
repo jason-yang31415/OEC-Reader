@@ -123,7 +123,7 @@ public class Boot {
 						params += "type=system;type=star;type=planet";
 					
 					s = s.substring(0, s.length() - 1);
-					ArrayList<Data> matches = search(s, params);
+					/*ArrayList<Data> matches = search(s, params);
 					
 					if (matches.size() == 1)
 						displayData(matches.get(0));
@@ -132,7 +132,7 @@ public class Boot {
 							chooseResult(matches);
 						else
 							System.out.println("No matches found.");
-					}
+					}*/
 				}
 				else if (commands[0].equalsIgnoreCase("update"))
 					update();
@@ -328,38 +328,8 @@ public class Boot {
 		return null;
 	}
 	
-	public ArrayList<Data> search(String search, String params){
+	public ArrayList<Data> search(String search, boolean searchSys, boolean searchStar, boolean searchPlanet){
 		ArrayList<Data> matches = new ArrayList<Data>();
-		
-		boolean searchSys, searchStar, searchPlanet;
-		searchSys = searchStar = searchPlanet = false;
-		
-		String[] pArray = params.split(";");
-		for (String s : pArray){
-			if (!s.equals("")){
-				String param = s.split("=")[0];
-				String value = s.split("=")[1];
-				switch (param){
-				case "type":
-					switch (value){
-					case "system":
-						searchSys = true;
-						break;
-					case "star":
-						searchStar = true;
-						break;
-					case "planet":
-						searchPlanet = true;
-						break;
-					default:
-						break;
-					}
-					break;
-				default:
-					break;
-				}
-			}
-		}
 		
 		for (StarSystem sys : systems){
 			boolean sysMatch = false;
