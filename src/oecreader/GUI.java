@@ -1,18 +1,24 @@
 package oecreader;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.*;
 
 public class GUI extends JFrame {
 
@@ -21,6 +27,13 @@ public class GUI extends JFrame {
 	Color background;
 	Color h1color, h2color, h3color;
 	
+	public JButton sync;
+	
+	public JCheckBox sysCheck, starCheck, pCheck;
+	public boolean sysChecked = true;
+	public boolean starChecked = true;
+	public boolean pChecked = true;
+	
 	public JPanel search;
 	public JTextField searchBar;
 	public JPanel searchBarPanel;
@@ -28,6 +41,8 @@ public class GUI extends JFrame {
 	
 	public JPanel results;
 	public JScrollPane scrollFrame;
+	
+	public MouseListener ml = new MouseListener();
 	
 	public GUI(){
 		super("Open Exoplanet Catalogue");
@@ -44,7 +59,7 @@ public class GUI extends JFrame {
 		h2color = Color.decode("#0038ba");
 		h3color = Color.decode("#000000");
 		
-		setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
+		setLayout(new BorderLayout());
 		getContentPane().setBackground(background);
 		
 		initComponents();
@@ -52,6 +67,73 @@ public class GUI extends JFrame {
 	
 	public void initComponents(){
 		try {
+			JPanel options = new JPanel();
+			options.setLayout(new BoxLayout(options, BoxLayout.PAGE_AXIS));
+			options.setBackground(background);
+			add(options, BorderLayout.WEST);
+			
+			sync = new JButton();
+			sync.setFocusable(false);
+			Image sync_img = ImageIO.read(this.getClass().getResourceAsStream("res/sync.png"));
+			ImageIcon sync_icon = new ImageIcon(sync_img);
+			Image sync_hover_img = ImageIO.read(this.getClass().getResourceAsStream("res/sync_hover.png"));
+			ImageIcon sync_hover_icon = new ImageIcon(sync_hover_img);
+			sync.setIcon(sync_icon);
+			sync.setPreferredSize(new Dimension(30, 30));
+			sync.setContentAreaFilled(false);
+			sync.addMouseListener(new MouseAdapter(){
+				
+				public void mouseEntered(java.awt.event.MouseEvent evt){
+					sync.setIcon(sync_hover_icon);
+				}
+				
+				public void mouseExited(java.awt.event.MouseEvent evt){
+					sync.setIcon(sync_icon);
+				}
+				
+			});
+			sync.addActionListener(new ActionListener(){
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					Boot.boot.update();
+					Boot.boot.parse();
+					Boot.boot.serialize();
+				}
+				
+			});
+			options.add(sync);
+			
+			options.add(Box.createRigidArea(new Dimension(0, 25)));
+			
+			sysCheck = new JCheckBox("system", true);
+			sysCheck.setBackground(background);
+			sysCheck.setFocusable(false);
+			
+			starCheck = new JCheckBox("star", true);
+			starCheck.setBackground(background);
+			starCheck.setFocusable(false);
+			
+			pCheck = new JCheckBox("planet", true);
+			pCheck.setBackground(background);
+			pCheck.setFocusable(false);
+			
+			options.add(sysCheck);
+			options.add(starCheck);
+			options.add(pCheck);
+			
+			CheckListener cl = new CheckListener();
+			sysCheck.addActionListener(cl);
+			starCheck.addActionListener(cl);
+			pCheck.addActionListener(cl);
+			
+			
+			
+			JPanel content = new JPanel();
+			content.setLayout(new BoxLayout(content, BoxLayout.PAGE_AXIS));
+			content.setBackground(background);
+			add(content, BorderLayout.CENTER);
+			
 			search = new JPanel();
 			search.setBorder(BorderFactory.createTitledBorder(null, "Search", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, font, Color.BLACK));
 			search.setMaximumSize(new Dimension(750, 100));
@@ -77,7 +159,7 @@ public class GUI extends JFrame {
 			
 			search.add(searchBarPanel);
 			search.add(searchButton);
-			add(search);
+			content.add(search);
 			
 			results = new JPanel();
 			results.setLayout(new GridLayout(0, 1, 0, 15));
@@ -96,9 +178,7 @@ public class GUI extends JFrame {
 			resultsPane.setMaximumSize(new Dimension(750, 540));
 			resultsPane.add(scrollFrame);
 			
-			add(resultsPane);
-			
-			//add(results);
+			content.add(resultsPane);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -109,11 +189,12 @@ public class GUI extends JFrame {
 		results.removeAll();
 		
 		for (Data d : r){
-			JPanel panel = new JPanel();
+			Result panel = new Result(d);
 			panel.setLayout(new GridLayout(0, 1));
 			panel.setBackground(background);
 			panel.setBorder(BorderFactory.createTitledBorder(null, d.getType(), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, font, Color.BLACK));
 			panel.setMaximumSize(new Dimension(700, 540));
+			panel.addMouseListener(ml);
 			
 			JLabel name = new JLabel(d.names.get(0));
 			name.setFont(h2);
@@ -154,7 +235,11 @@ public class GUI extends JFrame {
 	Action enter = new AbstractAction(){
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			ArrayList<Data> matches = Boot.boot.search(searchBar.getText(), true, true, true);
+			ArrayList<Data> matches = Boot.boot.search(searchBar.getText(), sysChecked, starChecked, pChecked);
+			
+			if (matches.size() == 1)
+				Boot.boot.displayData(matches.get(0));
+			
 			if (matches.size() > 15){
 				ArrayList<Data> sub_matches = new ArrayList<Data>(matches.subList(0, 15));
 				displayResults(sub_matches, true);
@@ -163,5 +248,30 @@ public class GUI extends JFrame {
 				displayResults(matches, false);
 		}
 	};
+	
+	public class MouseListener extends MouseAdapter {
+		
+		public void mousePressed(MouseEvent me){
+			Result r = (Result) me.getSource();
+			Boot.boot.displayData(r.getData());
+		}
+		
+	}
+	
+	public class CheckListener extends AbstractAction {
+	 
+	    @Override
+	    public void actionPerformed(ActionEvent event){
+	        JCheckBox box = (JCheckBox) event.getSource();
+	        if (box == sysCheck)
+	        	sysChecked = box.isSelected();
+	        else if (box == starCheck)
+	        	starChecked = box.isSelected();
+	        else if (box == pCheck)
+	        	pChecked = box.isSelected();
+	    }
+	    
+	}
+
 	
 }

@@ -35,6 +35,8 @@ public class Boot {
 	
 	public static Boot boot;
 	
+	GUI gui;
+	
 	Map<String, String> units = new HashMap<String, String>();
 	
 	String dir;
@@ -180,12 +182,11 @@ public class Boot {
 	public void displayData(Data d){
 		System.out.println("\n\n");
 		
-		if (d instanceof StarSystem)
-			displaySystemData((StarSystem) d);
-		else if (d instanceof Star)
-			displayStarData((Star) d);
-		else if (d instanceof Planet)
-			displayPlanetData((Planet) d);
+		DataDisplay display = new DataDisplay(d, gui);
+		display.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		display.setSize(720, 405);
+		display.setResizable(false);
+		display.setVisible(true);
 	}
 	
 	public void displaySystemData(StarSystem sys){
@@ -530,7 +531,7 @@ public class Boot {
 			// handle exception
 		}
 		
-		GUI gui = new GUI();
+		gui = new GUI();
 		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gui.setSize(960, 540);
 		gui.setResizable(false);
