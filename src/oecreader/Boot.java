@@ -46,21 +46,6 @@ public class Boot {
 	ArrayList<StarSystem> systems = new ArrayList<StarSystem>();
 	
 	boolean serialize = false;
-	Scanner sc;
-	
-	public enum State {
-		HOME("HOME"),
-		RESULTS("HOME > SEARCH"),
-		SYSTEM("SYSTEM"),
-		STAR("STAR"),
-		PLANET("PLANET");
-		
-		final String loc;
-		
-		State(String loc){
-			this.loc = loc;
-		}
-	}
 	
 	public static void main (String[] args){
 		boot = new Boot();
@@ -76,15 +61,11 @@ public class Boot {
 		initUnits();
 		
 		deserialize();
-        
-		sc = new Scanner(System.in);
 		
 		createGUI();
 	}
 	
 	public void displayData(Data d){
-		System.out.println("\n\n");
-		
 		DataDisplay display = new DataDisplay(d, gui);
 		display.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		display.setSize(720, 405);
@@ -240,10 +221,6 @@ public class Boot {
 		help.setResizable(false);
 		
 		help.setVisible(true);
-	}
-	
-	public void hr(){
-		System.out.println("----------------------------------------");
 	}
 	
 	public String getUnits(String key){
