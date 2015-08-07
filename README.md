@@ -1,4 +1,11 @@
 # OEC-Reader
+
+## Update: 8/7/2015
+
+The GUI (v0.3.0) is done and can be updated through the Updater.exe!
+
+--------
+
 Reads the OEC database
 
 Interactive UI for the OEC database offline.
