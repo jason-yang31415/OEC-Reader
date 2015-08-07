@@ -16,4 +16,14 @@ public abstract class Data  implements Serializable {
 			this.name += ", " + name;
 	}
 	
+	public String getType(){
+		if (this instanceof StarSystem)
+			return "System";
+		else if (this instanceof Star)
+			return "Star";
+		else if (this instanceof Planet)
+			return "Planet";
+		return null;
+	}
+	
 }
