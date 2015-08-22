@@ -9,6 +9,8 @@ public class Planet extends Data  implements Serializable {
 	String mass, radius, period, smaxis, discmethod, discyear, temp;
 	String age;
 	String description = "";
+	String image;
+	String image_description;
 	StarSystem parent;
 	
 	public void setParent(StarSystem parent){
@@ -45,6 +47,14 @@ public class Planet extends Data  implements Serializable {
 	
 	public void setAge(String age){
 		this.age = age;
+	}
+	
+	public void setImage(String image){
+		this.image = image;
+	}
+	
+	public void setImageDescription(String image_description){
+		this.image_description = image_description;
 	}
 	
 	public void setDescription(String description){

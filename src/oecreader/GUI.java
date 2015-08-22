@@ -112,6 +112,7 @@ public class GUI extends JFrame {
 					Boot.boot.update();
 					Boot.boot.parse();
 					Boot.boot.serialize();
+					Boot.boot.updateImages();
 				}
 				
 			});

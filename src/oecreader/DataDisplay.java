@@ -2,12 +2,14 @@ package oecreader;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -21,7 +23,7 @@ public class DataDisplay extends JFrame {
 	GUI gui;
 	
 	JTree tree;
-	Dimension treeDim = new Dimension(160, 405);
+	Dimension treeDim = new Dimension(160, 200);
 	
 	MouseListener ml = new MouseListener();
 
@@ -204,6 +206,12 @@ public class DataDisplay extends JFrame {
 	}
 	
 	public void displayPlanetData(Planet p){
+		JPanel sidepanel = new JPanel();
+		sidepanel.setLayout(new BorderLayout());
+		sidepanel.setBackground(gui.background);
+		sidepanel.setBorder(BorderFactory.createEmptyBorder());
+		add(sidepanel, BorderLayout.WEST);
+		
 		TreeNode sysTree = new TreeNode(p.parent);
 		tree = new JTree(sysTree);
 		tree.setShowsRootHandles(true);
@@ -213,7 +221,7 @@ public class DataDisplay extends JFrame {
 		scrollPane.setBackground(gui.background);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setPreferredSize(treeDim);
-		add(scrollPane, BorderLayout.WEST);
+		sidepanel.add(scrollPane, BorderLayout.NORTH);
 		
 		for (Star s : p.parent.stars){
 			TreeNode starTree = new TreeNode(s);
@@ -252,7 +260,11 @@ public class DataDisplay extends JFrame {
 		JPanel data = new JPanel();
 		data.setBackground(gui.background);
 		data.setLayout(new BoxLayout(data, BoxLayout.PAGE_AXIS));
-		content.add(data, BorderLayout.CENTER);
+		JScrollPane jsp = new JScrollPane(data);
+		jsp.setBorder(BorderFactory.createEmptyBorder());
+		jsp.getVerticalScrollBar().setUnitIncrement(5);
+		data.setAutoscrolls(true);
+		content.add(jsp, BorderLayout.CENTER);
 		
 		data.add(Box.createRigidArea(new Dimension(0, 30)));
 		
@@ -301,6 +313,41 @@ public class DataDisplay extends JFrame {
 		desc.setFont(gui.font);
 		desc.setAlignmentX(LEFT_ALIGNMENT);
 		data.add(desc);
+		
+		if (p.image != null){
+			data.add(Box.createRigidArea(new Dimension(0, 15)));
+			ImagePanel img = new ImagePanel(Boot.boot.dir + "/images/" + p.image);
+			img.setBackground(gui.background);
+			img.setAlignmentY(BOTTOM_ALIGNMENT);
+			img.setToolTipText("Double-click to view");
+			img.addMouseListener(new MouseListener(){
+				
+				@Override
+				public void mousePressed(MouseEvent e){
+					if (e.getClickCount() == 2){
+						File image = new File(Boot.boot.dir + "/images/" + p.image);
+						try {
+							Desktop.getDesktop().open(image);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+				
+			});
+			sidepanel.add(img, BorderLayout.SOUTH);
+			
+			if (p.image_description != null){
+				JTextArea img_desc = new JTextArea(p.image_description);
+				img_desc.setEditable(false);
+				img_desc.setLineWrap(true);
+				img_desc.setWrapStyleWord(true);
+				img_desc.setFont(gui.font);
+				img_desc.setAlignmentX(LEFT_ALIGNMENT);
+				data.add(img_desc);
+			}
+		}
 	}
 	
 	public class MouseListener extends MouseAdapter {

@@ -43,6 +43,7 @@ public class Boot {
 	
 	String dir;
 	String url = "https://github.com/OpenExoplanetCatalogue/oec_gzip/raw/master/systems.xml.gz";
+	String img_url = "https://raw.githubusercontent.com/hannorein/oec_outreach/master/images";
 	ArrayList<StarSystem> systems = new ArrayList<StarSystem>();
 	
 	boolean serialize = false;
@@ -144,6 +145,7 @@ public class Boot {
 	
 	public void update(){
 		try {
+			
 			System.out.println("Downloading from " + url + "...");
 			URL website = new URL(url);
 			ReadableByteChannel rbc = Channels.newChannel(website.openStream());
@@ -173,6 +175,32 @@ public class Boot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void updateImages(){
+		File img_folder = new File(dir + "/images");
+		if (!img_folder.exists())
+			img_folder.mkdir();
+		
+		for (StarSystem sys : systems){
+			for (Planet p : sys.planets){
+				if (p.image != null){
+					File img_dir = new File(dir + "/images/" + p.image);
+					if (!img_dir.exists()){
+						try {
+							System.out.println("Downloading from " + img_url + "/" + p.image + "...");
+							URL website = new URL(img_url + "/" + p.image);
+							ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+							FileOutputStream fos = new FileOutputStream(img_dir);
+							fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+							fos.close();
+							rbc.close();
+						} catch (IOException ioe){}
+					}
+				}
+			}
+		}
+		System.out.println("done");
 	}
 	
 	public void serialize(){

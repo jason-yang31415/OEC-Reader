@@ -218,6 +218,12 @@ public class Parser {
 					else
 						p.setAge(range(n));
 				}
+				else if (n.getNodeName().equals("image")){
+					p.setImage(text + ".jpg");
+				}
+				else if (n.getNodeName().equals("imagedescription")){
+					p.setImageDescription(text);
+				}
 				else if (n.getNodeName().equals("description")){
 					p.setDescription(text);
 				}
