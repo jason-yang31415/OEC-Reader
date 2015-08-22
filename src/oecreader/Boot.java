@@ -11,7 +11,10 @@ import java.io.InputStreamReader;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -185,17 +188,23 @@ public class Boot {
 		for (StarSystem sys : systems){
 			for (Planet p : sys.planets){
 				if (p.image != null){
-					File img_dir = new File(dir + "/images/" + p.image);
-					if (!img_dir.exists()){
-						try {
-							System.out.println("Downloading from " + img_url + "/" + p.image + "...");
-							URL website = new URL(img_url + "/" + p.image);
+					try {
+						String path = dir + "/images/" + p.image;
+						File img_dir = new File(path);
+						String url_full = img_url + "/" + p.image;
+						
+						if (!img_dir.exists()){
+							System.out.println("Downloading from " + url_full + "...");
+							URL website = new URL(url_full.replace(" ", "%20"));
 							ReadableByteChannel rbc = Channels.newChannel(website.openStream());
 							FileOutputStream fos = new FileOutputStream(img_dir);
 							fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+							
 							fos.close();
 							rbc.close();
-						} catch (IOException ioe){}
+						}
+					} catch (IOException ioe){
+						
 					}
 				}
 			}

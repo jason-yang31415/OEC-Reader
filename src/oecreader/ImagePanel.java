@@ -19,13 +19,15 @@ public class ImagePanel extends JPanel {
 	public ImagePanel(String dir) {
 		try {
 			image = ImageIO.read(new File(dir));
-			} catch (IOException ex) {
-				// handle exception...
-			}
-		width = 150;
-		float factor = width / (float) image.getWidth();
-		height = (int) (image.getHeight() * factor);
-		setPreferredSize(new Dimension(width, height));
+			width = 150;
+			float factor = width / (float) image.getWidth();
+			height = (int) (image.getHeight() * factor);
+			setPreferredSize(new Dimension(width, height));
+		} catch (IOException ex) {
+			System.err.println("Please update / sync with the OEC Database");
+			System.err.println("See the wiki for more info");
+			System.err.println("     wiki >> How to use OEC Reader >> v0.3.0 and After");
+		}
 	}
 	
 	@Override
